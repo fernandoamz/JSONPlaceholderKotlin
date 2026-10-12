@@ -1,12 +1,15 @@
 package com.example.jsonplaceholder.presentation.details
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jsonplaceholder.domain.model.Post
 import com.example.jsonplaceholder.domain.usecase.GetPostUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed interface PostDetailsUiState {
     data object Loading: PostDetailsUiState
@@ -14,10 +17,13 @@ sealed interface PostDetailsUiState {
     data class Error(val message: String): PostDetailsUiState
 }
 
-class PostDetailsViewModel(
+@HiltViewModel
+class PostDetailsViewModel @Inject constructor(
     private val getPostUseCase: GetPostUseCase,
-    private val postId: Int
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
+
+    private val postId: Int = checkNotNull(savedStateHandle["postId"])
 
     private val _uiState =
         MutableStateFlow<PostDetailsUiState>(PostDetailsUiState.Loading)

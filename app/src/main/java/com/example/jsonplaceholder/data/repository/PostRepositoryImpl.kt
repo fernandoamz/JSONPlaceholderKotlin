@@ -6,8 +6,9 @@ import com.example.jsonplaceholder.domain.model.Comment
 import com.example.jsonplaceholder.domain.model.Post
 import com.example.jsonplaceholder.domain.repository.PostRepository
 
+import javax.inject.Inject
 
-class PostRepositoryImpl(
+class PostRepositoryImpl @Inject constructor(
     private val api: PostsApi
 ): PostRepository {
     override suspend fun getPosts(): List<Post> {

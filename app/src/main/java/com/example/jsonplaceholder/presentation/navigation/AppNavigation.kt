@@ -7,10 +7,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.jsonplaceholder.presentation.comments.CommentsScreen
 import com.example.jsonplaceholder.presentation.details.PostDetailsScreen
 import com.example.jsonplaceholder.presentation.details.PostDetailsViewModel
 import com.example.jsonplaceholder.presentation.posts.PostsScreen
 import com.example.jsonplaceholder.presentation.posts.PostsViewModel
+import com.example.jsonplaceholder.presentation.comments.CommentsViewModel
 
 @Composable
 fun AppNavigation() {
@@ -22,10 +24,10 @@ fun AppNavigation() {
     )
     {
         composable("posts") {
-            val postsViewModel: PostsViewModel = hiltViewModel()
+            val viewModel: PostsViewModel = hiltViewModel()
 
             PostsScreen(
-                viewModel = postsViewModel,
+                viewModel = viewModel,
                 onPostClick = { postId ->
                     navController.navigate("postDetails/$postId")
                 }
@@ -39,11 +41,37 @@ fun AppNavigation() {
                     type = NavType.IntType
                 }
             )
-        ) { _ ->
-            val postDetailsViewModel: PostDetailsViewModel = hiltViewModel()
+        ) {
+            val viewModel: PostDetailsViewModel = hiltViewModel()
 
             PostDetailsScreen(
-                viewModel = postDetailsViewModel,
+                viewModel = viewModel,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onCommentsClick = { postId ->
+                    navController.navigate("comments/$postId")
+                }
+            )
+        }
+
+        composable(
+            route = "comments/{postId}",
+            arguments = listOf(
+                navArgument("postId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            val postId = requireNotNull(
+                backStackEntry.arguments?.getInt("postId")
+            )
+
+            val viewModel: CommentsViewModel = hiltViewModel()
+
+            CommentsScreen(
+                postId = postId,
+                viewModel = viewModel,
                 onBack = {
                     navController.popBackStack()
                 }

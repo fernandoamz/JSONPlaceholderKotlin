@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PostDetailsScreen(
     viewModel: PostDetailsViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onCommentsClick: (Int) -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -45,6 +46,11 @@ fun PostDetailsScreen(
                     text = currentState.post.body,
                     style = MaterialTheme.typography.bodyLarge
                 )
+                Button(onClick = {
+                    onCommentsClick(currentState.post.id)
+                }) {
+                    Text("Comments")
+                }
             }
 
             is PostDetailsUiState.Error -> {
